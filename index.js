@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const todoHandler = require('./routeHandler/todoHandler');
 const userHandler = require('./routeHandler/userHandler');
 
+const port = process.env.PORT || 5000;
 // express middleware------>
 const app = express();
 require("dotenv").config();
@@ -52,6 +53,6 @@ const  errorHandler = (err, req, res, next) => {
 
 
   
-  app.listen(5000, () => {
-    console.log("Mongoose App listening on port 5000");
+  app.listen(port, () => {
+    console.log(`Mongoose App listening on port ${port}`);
   });
