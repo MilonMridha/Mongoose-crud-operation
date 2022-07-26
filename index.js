@@ -21,7 +21,7 @@ app.use(express.json());
 
 mongoose
 .connect(
-    `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.t7ino.mongodb.net/${process.env.DB_Name}?retryWrites=true&w=majority`
+    `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.t7ino.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`
 ).then(() => console.log("Connected Successfully"))
 .catch((err) => console.log(err));
 
