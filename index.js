@@ -1,11 +1,20 @@
 const express = require('express');
+const cors = require('cors');
 const mongoose = require('mongoose');
-const todoHandler = require('./routeHandler/todoHandler.js');
-const userHandler = require('./routeHandler/userHandler.js');
+const todoHandler = require('./routeHandler/todoHandler');
+const userHandler = require('./routeHandler/userHandler');
 
 // express middleware------>
 const app = express();
 require("dotenv").config();
+
+
+const corsConfig = {
+  origin: true,
+  Credentials: true,
+}
+app.use(cors(corsConfig))
+app.options('*', cors(corsConfig));
 app.use(express.json());
 
 //Database connected with mongoose-------------->
@@ -16,9 +25,21 @@ mongoose
 ).then(() => console.log("Connected Successfully"))
 .catch((err) => console.log(err));
 
+
+
+app.get('/', (req, res) => {
+  res.status(200).send('Dein Hausman Server is Running');
+})
+
 // application routes-------->
 app.use('/todo', todoHandler);
 app.use('/user', userHandler);
+
+
+
+
+
+
 
 // database connection with mongoose-------->
 function errorHandler(err, req, res, next){

@@ -1,11 +1,32 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const todoHandler = ('../routeHandler/todoHandler.js');
-const userHandler = ('../routeHandler/userHandler.js');
+const mongoose = require("mongoose");
 
-// express middleware------>
-const app = express();
-require("dotenv").config();
-app.use(express.json());
+const userSchema = mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+    lowercase: true
+},
+  username: {
+    type: String,
+    
+  },
+  password: {
+    type: String,
+    required: true
+  },
+  status: {
+    type: String,
+    enum: ["active", "inactive"],
+  }
+});
 
-//Database connected with mongoose-------------->
+
+
+
+module.exports = userSchema;
