@@ -3,11 +3,13 @@ const mongoose = require('mongoose');
 const router = express.Router();
 const todoSchema = require('../schemas/todoSchema');
 const Todo = new mongoose.model('Todo', todoSchema);
-
+const checkLogin = require('../middleware/checkLogin')
 
 
 // Get todos----->
-router.get('/', async(req, res)=>{
+router.get('/', checkLogin, async(req, res)=>{
+    console.log(req.email)
+    console.log(req.userId)
  await Todo.find({status: 'active'}).select({
     _id: 0,
     _v: 0,
@@ -20,7 +22,7 @@ router.get('/', async(req, res)=>{
     } else{
         res.status(200).json({
             result: data,
-            message: 'successful'
+            "message": 'successful'
         });
     }
  })
@@ -36,7 +38,7 @@ router.get('/:id', async(req, res)=>{
     } else{
         res.status(200).json({
             result: data,
-            message: 'successful'
+            "message": 'successful'
         });
     }
  })
@@ -52,7 +54,7 @@ router.post('/', async(req, res)=>{
             });
         } else{
             res.status(200).json({
-                message: 'Todo was inserted successful'
+                "message": 'Todo was inserted successful'
             });
         }
     })

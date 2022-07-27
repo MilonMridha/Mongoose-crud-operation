@@ -42,13 +42,16 @@ app.use('/user', userHandler);
 
 
 // database connection with mongoose-------->
-function errorHandler(err, req, res, next){
+const  errorHandler = (err, req, res, next) => {
     if (res.headerSent) {
       return next(err);
     }
     res.status(500).json({ error: err });
   }
   app.use(errorHandler);
+
+
+  
   app.listen(5000, () => {
     console.log("Mongoose App listening on port 5000");
   });
