@@ -6,6 +6,42 @@ const router = express.Router();
 const userSchema = require('../schemas/userSchema');
 const User = new mongoose.model('User', userSchema);
 
+const nodemailer = require("nodemailer");
+const randomstring = require("randomstring");
+
+
+const sendResetPasswordMail = async (name, email, token) => {
+
+    try {
+        const transporter = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 587,
+            secure: false,
+            requireTLS: true,
+            auth: {
+                user: process.env.NODE_MAIL_USER,
+                pass: process.env.NODE_MAIL_PASS
+            }
+        });
+        const mailOptions = {
+            from: process.env.NODE_MAIL_USER,
+            to: email,
+            subject: 'For reset password',
+            html: '<p> Hi ' + name + ', Please copy the link and <a href="http://localhost:5000/user/reset-password?token=' + token + '">reset password</a>'
+        }
+        transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+                console.log(error);
+            }
+            else {
+                console.log("Mail has been sent:-", info.response)
+            }
+        })
+    } catch (err) {
+        res.status(400).send({ success: false, msg: err.message })
+    }
+}
+
 // Sign Up---------->
 router.post('/signup', async (req, res) => {
     try {
@@ -19,8 +55,8 @@ router.post('/signup', async (req, res) => {
         res.status(200).json({
             "message": 'SignUp was Successful!'
         });
-} 
-    catch(err) {
+    }
+    catch (err) {
         console.log(err)
         res.status(500).json({
             "message": 'SignUp Failed!'
@@ -32,10 +68,10 @@ router.post('/signup', async (req, res) => {
 
 router.post('/login', async (req, res) => {
     try {
-        const user = await User.find({email: req.body.email})
-        if(user && user.length > 0){
+        const user = await User.find({ email: req.body.email })
+        if (user && user.length > 0) {
             const isValidPassword = await bcrypt.compare(req.body.password, user[0].password)
-            if(isValidPassword){
+            if (isValidPassword) {
                 const token = jwt.sign({
                     email: user[0].email,
                     userId: user[0]._id
@@ -46,17 +82,60 @@ router.post('/login', async (req, res) => {
                     "accessToken": token,
                     "message": 'login successful'
                 })
-            } else{
+            } else {
                 res.status(401).json({
                     "error": 'Authentication Failed'
                 })
             }
         }
-} 
-    catch(err) {
-        
+    }
+    catch (err) {
+
     }
 });
+
+// Forget-password api--------->
+router.post('/forget-password', async (req, res) => {
+    try {
+        const email = req.body.email
+        const userData = await User.findOne({ email: email });
+        console.log(userData)
+        if (userData) {
+            const randomString = randomstring.generate();
+            const data = await User.updateOne({ email: email }, { $set: { token: randomString } })
+            sendResetPasswordMail(userData.name, userData.email, randomString)
+            res.status(200).send({ success: true, msg: "Please check your mail & reset your password." })
+        } else {
+            res.status(200).send({ success: true, msg: "This email does not exist" })
+        }
+
+
+
+    } catch (err) {
+        console.log(err)
+        res.status(400).send({ success: false, msg: err.message })
+    }
+});
+
+//Reset-password----------->
+router.get('/reset-password', async (req, res) => {
+    try {
+        const token = req.query.token;
+        const tokenData =await User.findOne({ token:token });
+        if(tokenData){
+            const password = req.body.password;
+            const hashedPassword = await bcrypt.hash(password, 10);
+            User.findIdAndUpdate()
+
+        }
+        else{
+            res.status(200).send({ success: false, msg: "This link has been expired" })
+        }
+    } catch (error) {
+        res.status(400).send({ success: false, msg: error.message })
+    }
+})
+
 
 
 module.exports = router;

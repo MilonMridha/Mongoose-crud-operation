@@ -23,6 +23,10 @@ const userSchema = mongoose.Schema({
   status: {
     type: String,
     enum: ["active", "inactive"],
+  },
+  token:{
+    type: String,
+    default: ''
   }
 });
 
