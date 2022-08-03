@@ -99,7 +99,7 @@ router.post('/forget-password', async (req, res) => {
     try {
         const email = req.body.email
         const userData = await User.findOne({ email: email });
-        console.log(userData)
+        
         if (userData) {
             const randomString = randomstring.generate();
             const data = await User.updateOne({ email: email }, { $set: { token: randomString } })
@@ -125,11 +125,11 @@ router.get('/reset-password', async (req, res) => {
         if(tokenData){
             const password = req.body.password;
             const hashedPassword = await bcrypt.hash(password, 10);
-            User.findIdAndUpdate()
-
+            const userData = await User.findByIdAndUpdate({_id: tokenData._id}, {$set: {password: hashedPassword,token:''}},{new:true})
+            res.status(200).send({ success: true, msg: "User Password has been reset", data: userData })
         }
         else{
-            res.status(200).send({ success: false, msg: "This link has been expired" })
+            res.status(200).send({ success: true, msg: "This link has been expired" })
         }
     } catch (error) {
         res.status(400).send({ success: false, msg: error.message })
