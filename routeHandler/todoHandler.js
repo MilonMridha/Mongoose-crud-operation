@@ -8,8 +8,7 @@ const checkLogin = require('../middleware/checkLogin')
 
 // Get todos----->
 router.get('/', checkLogin, async(req, res)=>{
-    console.log(req.email)
-    console.log(req.userId)
+    
  await Todo.find({status: 'active'}).select({
     _id: 0,
     _v: 0,

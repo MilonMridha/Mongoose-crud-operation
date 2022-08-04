@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const userSchema = mongoose.Schema({
+const createUserSchema = mongoose.Schema({
   name: {
     type: String,
     
@@ -16,23 +16,18 @@ const userSchema = mongoose.Schema({
     type: String,
     
   },
-  password: {
-    type: String,
-    required: true
-  },
+  address: String,
+  phone: Number,
+
   status: {
     type: String,
-    enum: ["active", "inactive"],
+    enum: ["active", "inactive"]
   },
-  token:{
-    type: String,
-    default: ''
-  },
-  role: String
+  
   
 });
 
 
 
 
-module.exports = userSchema;
+module.exports = createUserSchema;
