@@ -68,7 +68,12 @@ router.post('/signup', async (req, res) => {
 
 router.post('/login', async (req, res) => {
     try {
+        const email = req.body.email
+        console.log(email)
+        
         const user = await User.find({ email: req.body.email })
+        console.log(user)
+        
         if (user && user.length > 0) {
             const isValidPassword = await bcrypt.compare(req.body.password, user[0].password)
             if (isValidPassword) {
@@ -90,6 +95,7 @@ router.post('/login', async (req, res) => {
         }
     }
     catch (err) {
+        console.log(err)
 
     }
 });
