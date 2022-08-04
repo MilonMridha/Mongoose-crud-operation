@@ -239,7 +239,7 @@ router.get('/pagination', async(req,res)=>{
     const skip = pageSize * (currentPage-1);
     const limit = pageSize
 
-    await User.find({}).skip(skip.limit(limit).exec((err, docs)=>{
+    await User.find({}).skip(skip).limit(limit).exec((err, docs)=>{
         if(err){
             responseObj ={
                 "status": "error",
@@ -250,12 +250,12 @@ router.get('/pagination', async(req,res)=>{
         }else{
             responseObj ={
                 "status": "success",
-                "msg": "input is missing",
+                "msg": "input is valid",
                 "body": docs
             }
             res.status(200).send(responseObj);
         }
-    }))
+    })
  
   }
  } catch (error){
