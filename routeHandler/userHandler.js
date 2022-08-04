@@ -85,6 +85,7 @@ router.post('/login', async (req, res) => {
                 });
                 res.status(200).json({
                     "accessToken": token,
+                    "userData": user,
                     "message": 'login successful'
                 })
             } else {
@@ -141,6 +142,7 @@ router.get('/reset-password', async (req, res) => {
         res.status(400).send({ success: false, msg: error.message })
     }
 })
+
 
 
 
